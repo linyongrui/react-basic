@@ -1,0 +1,7 @@
+.nav-item {
+  font-weight: 1000;
+  color: black;
+}
+.active {
+  color: blue;
+}
