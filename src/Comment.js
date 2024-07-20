@@ -1,7 +1,9 @@
 import './Comment.css';
-import { useState } from 'react';
+import { useRef, useState } from 'react';
 import _ from 'lodash';
 import classNames from 'classnames';
+import { v4 as uuidv4 } from 'uuid';
+import dayjs from 'dayjs';
 
 // const clickHandle = () => {
 //   console.log('clicked');
@@ -17,7 +19,8 @@ import classNames from 'classnames';
 // }
 
 function Comment() {
-  var commentList = [
+
+  var commentListInit = [
     {
       cid: 1001,
       uid: 2001,
@@ -40,6 +43,7 @@ function Comment() {
       likeNum: 3
     }
   ]
+
   var tapList = [
     {
       tapid: 3001,
@@ -53,45 +57,64 @@ function Comment() {
     }
   ]
 
-  var mystate = {
-    tapType: 'new',
-    commentList: _.orderBy(commentList, 'date', 'desc')
-  }
-  const [commentState, setCommentState] = useState(mystate);
-
   const delHandle = (cid) => {
-    setCommentState(
-      {
-        ...commentState,
-        commentList: commentState.commentList.filter(item => item.cid !== cid)
-      }
+    setCommentList(
+      commentList.filter(item => item.cid !== cid)
     )
   }
 
   const changeTap = (tapType) => {
-    setCommentState(
-      {
-        ...commentState,
-        commentList: _.orderBy(commentState.commentList, tapType==='hot'?'likeNum':'date', 'desc'),
-        tapType
-      }
+    setTapType(tapType);
+    setCommentList(
+      _.orderBy(commentList, tapType === 'hot' ? 'likeNum' : 'date', 'desc'),
     )
   }
+
+  const changeText = (e) => {
+    setContent(e.target.value);
+  }
+
+  const publishComment = () => {
+    setCommentList(
+      [
+        ...commentList,
+        {
+          cid: uuidv4(),
+          uid: 2003,
+          commentStr: content,
+          date: dayjs(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+          likeNum: 11
+        }
+      ]
+    )
+    setContent('');
+    inputRef.current.focus();
+  }
+
+  const [commentList, setCommentList] = useState(_.orderBy(commentListInit, 'date', 'desc'));
+  const [tapType, setTapType] = useState('new');
+  const [content, setContent] = useState();
+
+  const inputRef = useRef(null);
 
   return (
     <div>
       <div>
-      <span>评论：{commentState.commentList.length}       </span>
+        <span>评论：{commentList.length}       </span>
         {tapList.map(item => (
           <span id={item.tapid}
             onClick={() => changeTap(item.tapType)}
-            // className={`nav-item ${commentState.tapType === item.tapType && 'active'}`}
-            className={classNames('nav-ite', {'active' :commentState.tapType === item.tapType})}
+            // className={`nav-item ${tapType === item.tapType && 'active'}`}
+            className={classNames('nav-ite', { 'active': tapType === item.tapType })}
           >
             {item.tapLabel}
           </span>))}
       </div>
-      {commentState.commentList.map(item => (
+      <div>
+        <input onChange={changeText} ref={inputRef} value={content}></input>
+        <button onClick={publishComment}>发布</button>
+      </div>
+      {commentList.map(item => (
         <div>
           <div>{item.commentStr}</div>
           <div id={item.cid}>
