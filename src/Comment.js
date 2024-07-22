@@ -1,48 +1,36 @@
 import './Comment.css';
-import { useRef, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import _ from 'lodash';
 import classNames from 'classnames';
 import { v4 as uuidv4 } from 'uuid';
 import dayjs from 'dayjs';
-
-// const clickHandle = () => {
-//   console.log('clicked');
-// }
-// const clickHandle = (e) => {
-//   console.log('clicked',e);
-// }
-// const clickHandle = (inputP) => {
-//   console.log('clicked',inputP);
-// }
-// const clickHandle = (inputP,e) => {
-//   console.log('clicked',inputP,e);
-// }
+import axios from 'axios';
 
 function Comment() {
 
-  var commentListInit = [
-    {
-      cid: 1001,
-      uid: 2001,
-      commentStr: 'aaaaaaaaaa',
-      date: '2024-07-22',
-      likeNum: 0
-    },
-    {
-      cid: 1002,
-      uid: 2002,
-      commentStr: 'bbbbbbbbbb',
-      date: '2024-07-21',
-      likeNum: 1
-    },
-    {
-      cid: 1003,
-      uid: 2003,
-      commentStr: 'cccccccccccccc',
-      date: '2024-07-20',
-      likeNum: 3
-    }
-  ]
+  // var commentListInit = [
+  //   {
+  //     cid: 1001,
+  //     uid: 2001,
+  //     commentStr: 'aaaaaaaaaa',
+  //     date: '2024-07-22',
+  //     likeNum: 0
+  //   },
+  //   {
+  //     cid: 1002,
+  //     uid: 2002,
+  //     commentStr: 'bbbbbbbbbb',
+  //     date: '2024-07-21',
+  //     likeNum: 1
+  //   },
+  //   {
+  //     cid: 1003,
+  //     uid: 2003,
+  //     commentStr: 'cccccccccccccc',
+  //     date: '2024-07-20',
+  //     likeNum: 3
+  //   }
+  // ]
 
   var tapList = [
     {
@@ -91,11 +79,22 @@ function Comment() {
     inputRef.current.focus();
   }
 
-  const [commentList, setCommentList] = useState(_.orderBy(commentListInit, 'date', 'desc'));
+  // const [commentList, setCommentList] = useState(_.orderBy(commentListInit, 'date', 'desc'));
+  const [commentList, setCommentList] = useState([]);
   const [tapType, setTapType] = useState('new');
   const [content, setContent] = useState();
 
   const inputRef = useRef(null);
+
+  useEffect(
+    ()=>{
+      async function getList() {
+        const resp = await axios.get("http://localhost:3004/list")
+        setCommentList(_.orderBy(resp.data, 'date', 'desc'))
+      }
+      getList()
+    },[]
+  )
 
   return (
     <div>

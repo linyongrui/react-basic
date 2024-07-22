@@ -1,0 +1,25 @@
+{
+    "list": [
+        {
+            "cid": 1001,
+            "uid": 2001,
+            "commentStr": "aaaaaaaaaa",
+            "date": "2024-07-22",
+            "likeNum": 0
+        },
+        {
+            "cid": 1002,
+            "uid": 2002,
+            "commentStr": "bbbbbbbbbb",
+            "date": "2024-07-21",
+            "likeNum": 1
+        },
+        {
+            "cid": 1003,
+            "uid": 2003,
+            "commentStr": "cccccccccccccc",
+            "date": "2024-07-20",
+            "likeNum": 3
+        }
+    ]
+}
